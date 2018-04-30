@@ -410,7 +410,6 @@ InitMenus()
 
    if (nFloppies == 0) {
       EnableMenuItem(hMenu, IDM_DISKCOPY, MF_BYCOMMAND | MF_GRAYED);
-      EnableMenuItem(hMenu, IDM_FORMAT,   MF_BYCOMMAND | MF_GRAYED);
    }
 
 
@@ -943,13 +942,6 @@ InitFileManager(
    //
    hAppInstance = hInstance;
 
-   lcid = GetThreadLocale();
-
-
-JAPANBEGIN
-   bJapan = (PRIMARYLANGID(LANGIDFROMLCID(lcid)) == LANG_JAPANESE);
-JAPANEND
-
    if (*lpCmdLine)
       nCmdShow = SW_SHOWMINNOACTIVE;
 
@@ -965,6 +957,26 @@ JAPANEND
 		   wsprintf(szTheINIFile, TEXT("%s\\%s"), szBuffer, szBaseINIFile);
 	   }
    }
+
+   // e.g., UILanguage=zh-CN; UI language defaults to OS set language or English if that language is not supported.
+   GetPrivateProfileString(szSettings, szUILanguage, szNULL, szTemp, COUNTOF(szTemp), szTheINIFile);
+   if (szTemp[0])
+   {
+       LCID lcidUI = LocaleNameToLCID(szTemp, 0);
+       if (lcidUI != 0)
+       {
+           SetThreadUILanguage((LANGID)lcidUI);
+
+           // update to current local used for dispaly
+           SetThreadLocale(lcidUI);
+       }
+   }
+
+   lcid = GetThreadLocale();
+
+JAPANBEGIN
+   bJapan = (PRIMARYLANGID(LANGIDFROMLCID(lcid)) == LANG_JAPANESE);
+JAPANEND
 
    //
    // Constructors for info system.
