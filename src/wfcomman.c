@@ -601,7 +601,7 @@ OpenOrEditSelection(HWND hwndActive, BOOL fEdit)
    DWORD ret;
    HCURSOR hCursor;
 
-   WCHAR szPath[MAXPATHLEN];
+   WCHAR szPath[MAXPATHLEN+2];  // +2 for quotes if needed
 
    HWND hwndTree, hwndDir, hwndFocus;
 
@@ -648,7 +648,8 @@ OpenOrEditSelection(HWND hwndActive, BOOL fEdit)
    if (!p)
       goto OpenExit;
 
-   if (!GetNextFile(p, szPath, COUNTOF(szPath)) || !szPath[0])
+   // less 2 characters in case we need to add quotes below
+   if (!GetNextFile(p, szPath, COUNTOF(szPath)-2) || !szPath[0])
       goto OpenFreeExit;
 
    if (bDir) {
@@ -691,30 +692,25 @@ OpenOrEditSelection(HWND hwndActive, BOOL fEdit)
       //
       if (fEdit)
       {
-          // check if notepad++ exists: %ProgramFiles%\Notepad++\notepad++.exe
-          TCHAR szToRun[MAXPATHLEN];
+          TCHAR szEditPath[MAX_PATH];
+          TCHAR szNotepad[MAX_PATH];
 
-          DWORD cchEnv = GetEnvironmentVariable(TEXT("ProgramFiles"), szToRun, MAXPATHLEN);
-          if (cchEnv != 0)
-          {
-            // NOTE: assume ProgramFiles directory and "\\Notepad++\\notepad++.exe" never exceed MAXPATHLEN
-            lstrcat(szToRun, TEXT("\\Notepad++\\notepad++.exe"));
-            if (!PathFileExists(szToRun))
-            {
-                cchEnv = 0;
-            }
-          }
+          // NOTE: assume system directory and "\\notepad.exe" never exceed MAXPATHLEN
+          if (GetSystemDirectory(szNotepad, MAXPATHLEN) != 0)
+              lstrcat(szNotepad, TEXT("\\notepad.exe"));
+          else
+              lstrcpy(szNotepad, TEXT("notepad.exe"));
 
-          if (cchEnv == 0)
-          {
-              // NOTE: assume system directory and "\\notepad.exe" never exceed MAXPATHLEN
-              if (GetSystemDirectory(szToRun, MAXPATHLEN) != 0)
-                  lstrcat(szToRun, TEXT("\\notepad.exe"));
-              else
-                  lstrcpy(szToRun, TEXT("notepad.exe"));
-          }
+          GetPrivateProfileString(szSettings, szEditorPath, szNotepad, szEditPath, MAX_PATH, szTheINIFile);
 
-          ret = ExecProgram(szToRun, szPath, NULL, (GetKeyState(VK_SHIFT) < 0), FALSE);
+          CheckEsc(szPath);     // add quotes if necessary; reserved space for them above
+
+          if(wcslen(szEditPath))
+             ret = ExecProgram(szEditPath, szPath, NULL, (GetKeyState(VK_SHIFT) < 0), FALSE);
+          //If INI entry is empty
+          else
+             ret = ExecProgram(szNotepad, szPath, NULL, (GetKeyState(VK_SHIFT) < 0), FALSE);
+
       }
       else
       {
@@ -1632,28 +1628,17 @@ AppCommandProc(register DWORD id)
 
    case IDM_FORMAT:
 
-      if (CancelInfo.hCancelDlg) {
-         SetFocus(CancelInfo.hCancelDlg);
-         break;
+      if (!hwndFormatSelect)
+      {
+         hwndFormatSelect = CreateDialog(hAppInstance, (LPTSTR)MAKEINTRESOURCE(FORMATSELECTDLG),
+            hwndFrame, (DLGPROC)FormatSelectDlgProc);
+      }
+      else
+      {
+         ShowWindow(hwndFormatSelect, SW_SHOW);
+         SetActiveWindow(hwndFormatSelect);
       }
 
-      if (CancelInfo.hThread) {
-         //
-         // Don't create any new worker threads
-         // Just create old dialog
-         //
-
-         CreateDialog(hAppInstance, (LPTSTR) MAKEINTRESOURCE(CANCELDLG), hwndFrame, (DLGPROC) CancelDlgProc);
-
-         return TRUE;
-      }
-
-      if (!FmifsLoaded())
-         break;
-
-      // Don't use modal dialog box
-
-      FormatDiskette(hwndFrame,FALSE);
       break;
 
    case IDM_SHAREAS:
@@ -1912,6 +1897,10 @@ ChangeDisplay:
 
     case IDM_CONFIRM:
        DialogBox(hAppInstance, (LPTSTR) MAKEINTRESOURCE(CONFIRMDLG), hwndFrame, (DLGPROC)ConfirmDlgProc);
+       break;
+
+    case IDM_PREF:
+       DialogBox(hAppInstance, (LPTSTR) MAKEINTRESOURCE(PREFDLG), hwndFrame, (DLGPROC)PrefDlgProc);
        break;
 
     case IDM_STATUSBAR:

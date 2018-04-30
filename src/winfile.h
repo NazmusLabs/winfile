@@ -588,12 +588,14 @@ INT_PTR  ExitDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  DiskLabelDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  ChooseDriveDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  FormatDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR  FormatSelectDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  OtherDlgProc(register HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 
 INT_PTR  ProgressDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  SortByDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  IncludeDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  ConfirmDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR  PrefDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  AboutDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR  GotoDirDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam);
 
@@ -610,6 +612,10 @@ VOID SearchEnd(VOID);
 // WFFILE.C
 BOOL WFCheckCompress(HWND hDlg, LPTSTR szNameSpec, DWORD dwNewAttrs, BOOL bPropertyDlg, BOOL *bIgnoreAll);
 BOOL GetRootPath(LPTSTR szPath, LPTSTR szReturn);
+
+//WFLOC.C
+VOID InitLangList(HWND hCBox);
+VOID SaveLang(HWND hCBox);
 
 
 // TBAR.C
@@ -802,16 +808,17 @@ BOOL  RectTreeItem(HWND hwndLB, register INT iItem, BOOL bFocusOn);
 #define ATTR_REPARSE_POINT  FILE_ATTRIBUTE_REPARSE_POINT // == 0x0400  
 #define ATTR_COMPRESSED     FILE_ATTRIBUTE_COMPRESSED   // == 0x0800
 #define ATTR_NOT_INDEXED    FILE_ATTRIBUTE_NOT_CONTENT_INDEXED // == 0x2000
-#define ATTR_USED           0x2DBF						// ATTR we use that are returned from FindFirst/NextFile
+#define ATTR_ENCRYPTED      FILE_ATTRIBUTE_ENCRYPTED    // == 0x4000
+#define ATTR_USED           0x6DBF						// ATTR we use that are returned from FindFirst/NextFile
 
 #define ATTR_PARENT         0x0040  // my hack DTA bits
-#define ATTR_LOWERCASE      0x4000
 #define ATTR_LFN           0x10000  // my hack DTA bits
 #define ATTR_JUNCTION      0x20000
 #define ATTR_SYMBOLIC      0x40000
+#define ATTR_LOWERCASE     0x80000
 
 #define ATTR_RWA            (ATTR_READWRITE | ATTR_ARCHIVE)
-#define ATTR_ALL            (ATTR_READONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_DIR | ATTR_ARCHIVE | ATTR_NORMAL | ATTR_COMPRESSED | ATTR_REPARSE_POINT)
+#define ATTR_ALL            (ATTR_READONLY | ATTR_HIDDEN | ATTR_SYSTEM | ATTR_DIR | ATTR_ARCHIVE | ATTR_NORMAL | ATTR_COMPRESSED | ATTR_ENCRYPTED | ATTR_REPARSE_POINT)
 #define ATTR_PROGRAMS       0x0100
 #define ATTR_DOCS           0x0200
 #define ATTR_OTHER          0x1000
@@ -1163,6 +1170,8 @@ Extern TCHAR        szDriveBar[]            EQ( TEXT("DriveBar") );
 Extern TCHAR        szToolbar[]             EQ( TEXT("ToolBar") );
 Extern TCHAR        szNewWinOnNetConnect[]  EQ( TEXT("NewWinOnNetConnect") );
 Extern TCHAR        szDisableVisualStyles[] EQ( TEXT("DisableVisualStyles") );
+Extern TCHAR        szUILanguage[]          EQ( TEXT("UILanguage") );
+Extern TCHAR        szEditorPath[]          EQ( TEXT("EditorPath"));
 
 Extern TCHAR        szMinOnRun[]            EQ( TEXT("MinOnRun") );
 Extern TCHAR        szIndexOnLaunch[]       EQ( TEXT("IndexOnLaunch") );
@@ -1297,6 +1306,7 @@ Extern HWND  hwndDriveBar      EQ( NULL );
 Extern HWND  hwndToolbar       EQ( NULL );
 Extern HWND  hwndDriveList     EQ( NULL );
 Extern HWND  hwndDropChild     EQ( NULL );  // for tree windows forwarding to drivebar
+Extern HWND  hwndFormatSelect  EQ( NULL );
 
 Extern BOOL bCancelTree;
 
