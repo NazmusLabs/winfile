@@ -24,6 +24,7 @@ SRCS = \
 	wfinfo.c \
 	wfinit.c \
 	wfmem.c \
+	wfloc.c \
 	wfprint.c \
 	wfsearch.c \
 	wftree.c \
@@ -54,13 +55,13 @@ $(TARGET) : $(OBJS)
 .cpp.o :
 	g++ -c $(CFLAGS) -I. $< -o $@
 
-res.o : res.rc
-	windres -I. -i res.rc -o res.o
+res.o : res.rc lang/*.rc lang/*.dlg
+	windres -DNOWINRES -I. -i res.rc -o res.o
 
 clean :
 	rm -f $(OBJS) $(TARGET)
 
 depend:
-	gcc -E -MM -w *.c >> Makefile.depends
+	gcc -E -MM -w *.c > Makefile.depends
 
 -include Makefile.depends

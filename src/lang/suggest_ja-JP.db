@@ -1,4 +1,3 @@
-
 // Suggestion database info
 // Used to automate the suggestions compiled into winfile
 //
@@ -33,43 +32,43 @@
 #endif
 
 SUGGEST( 1, DE_SAMEFILE, 0L, \
- "Source and destination are the same." )
+ "コピー元とコピー先が同じです。" )
 SUGGEST( 2, DE_MANYSRC1DEST, 0L, \
- "Select only one file to rename, or use wildcards (for example, *.TXT) to rename a group of files with similar names." )
+ "リネームするファイルを1つだけ選択するか、ワイルド カード(例: *.TXT)を使用して似た名前のファイル名を変更します。" )
 SUGGEST( 3, DE_DIFFDIR, 0L, \
- "Cannot rename to a different directory or disk.\nUse the File Move command instead." )
+ "別のディレクトリまたはディスクに名前を変更することはできません。\n'ファイル移動' コマンドを使用して下さい。" )
 SUGGEST( 4, DE_ROOTDIR, 0L, \
- "You cannot rename the root directory." )
+ "ルート ディレクトリの名前は変更できません。" )
 SUGGEST( 5, DE_DESTSUBTREE, 0L, \
- "The destination directory is a subdirectory of the source." )
+ "宛先のディレクトリがサブディレクトリにあります。" )
 SUGGEST( 6, DE_WINDOWSFILE, 0L, \
- "File in use by Windows." )
+ "Windows がファイルを使用しています。" )
 SUGGEST( 7, DE_MANYDEST, 0L, \
- "Specify only one file or directory in the To box. Or, if you want to specify a group of files, use wildcards (for example, *.TXT)." )
+ "[宛先]に指定できるファイルまたはディレクトリは1つだけです。ファイル セットを指定する場合はワイルド カード(例: * .TXT)を使用します。" )
 SUGGEST( 8, DE_RENAMREPLACE, 0L, \
- "A file or directory by this name already exists.  Within a directory, file and directory names must be unique." )
+ "ファイルまたはディレクトリは既に存在します。ディレクトリ内ではファイルまたはディレクトリの名前は一意である必要があります。" )
 
 // This error is returned when selecting a grayed network drive and the rdr is not started
 SUGGEST( 9, ERROR_FILE_NOT_FOUND, 0L, \
- "Make sure the correct path and filename are specified." )
+ "正しいパスとファイル名を指定して下さい。" )
 SUGGEST(10, ERROR_PATH_NOT_FOUND, 0L, \
- "Make sure the correct path is specified." )
+ "正しいパスを指定して下さい。" )
 SUGGEST(11, ERROR_NOT_ENOUGH_MEMORY, 0L, \
- "Quit one or more applications, and then try again.  Or, use the Systems option in Control Panel to increase your virtual memory." )
+ "1つまたは複数のアプリケーションを終了してもう一度試して下さい。それでも駄目な場合はコントロール パネルの[システム]オプションで仮想メモリを増やしてください。" )
 // 12
 SUGGEST(13, ERROR_WRITE_PROTECT, 0L, \
- "Disable the write-protection on this disk or use another disk, and then try again." )
+ "ディスクの保護を解除するか別のディスクを使用してもう一度試して下さい。" )
 SUGGEST(14, ERROR_NETWORK_ACCESS_DENIED, 0L, \
- "Be sure you have the correct network permissions to perform this operation." )
+ "この操作を実行するた為の正しいネットワーク権限があるか確認して下さい。" )
 SUGGEST(15, ERROR_DISK_FULL, 0L, \
-  "Delete one or more files to increase disk space, and then try again." )
+  "1つまたは複数のファイルを削除しディスク容量を増やしてからもう一度試して下さい。" )
 SUGGEST(16, ERROR_NO_DATA_DETECTED, SUG_IGN_FORMATMESSAGE, \
-  "No data detected on this medium." )
+  "このメディアはデータが検出されません。" )
 
 SUGGEST(17, DE_MAKEDIREXISTS, 0L, \
-  "The directory already exists." )
+  "このディレクトリは既に存在します。" )
 SUGGEST(18, DE_DIREXISTSASFILE, 0L, \
-  "The specified name is already used by a file." )
+  "指定された名前は既に別のファイルで使用されています。" )
 #ifdef ASSOC
 SUGGEST(19, DE_DELEXTWRONGMODE, 0L, \
   "This can only be deleted when viewing Common File Types and extensions." )
@@ -77,15 +76,15 @@ SUGGEST(19, DE_DELEXTWRONGMODE, 0L, \
 
 // Block out errors that require arguments
 SUGGEST(50, ERROR_WRONG_DISK, SUG_IGN_FORMATMESSAGE, \
-  "The wrong disk is in the drive." )
+  "ドライブ内のディスクが正しくありません。" )
 SUGGEST(51, ERROR_CHILD_NOT_COMPLETE, SUG_IGN_FORMATMESSAGE, \
-  "The application cannot be run in Windows NT mode." )
+  "アプリケーションは Windows NT モードで実行できません。" )
 SUGGEST(52, ERROR_INVALID_ORDINAL, SUG_IGN_FORMATMESSAGE, \
-  "The operating system cannot run this component." )
+  "オペレーティング システムはこのコンポーネントを実行できません。" )
 SUGGEST(53, ERROR_INVALID_EXE_SIGNATURE, SUG_IGN_FORMATMESSAGE, \
-  "The component cannot be run in Windows NT mode." )
+  "コンポーネントは Windows NT モードで実行できません。" )
 SUGGEST(54, ERROR_BAD_EXE_FORMAT, SUG_IGN_FORMATMESSAGE, \
-  "This program is not a valid Windows NT application." )
+  "このプログラムは有効な Windows NT アプリケーションではありません。" )
 SUGGEST(55, ERROR_MR_MID_NOT_FOUND, SUG_IGN_FORMATMESSAGE, \
-  "An error occurred.  There is no message text for this error." )
+  "エラーが発生しました。このエラーに関するメッセージはありません。" )
 
